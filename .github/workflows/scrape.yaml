@@ -1,0 +1,35 @@
+---
+name: Fetch latest data
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 5 * * *'
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Fetch latest data
+      uses: benwebber/get-ckan-package@v1
+      with:
+        url: https://ckan0.cf.opendata.inter.prod-toronto.ca/
+        package_id: ea1d6e57-87af-4e23-b722-6c1f5aa18a8d
+        output_dir: data
+        resource_ids: '["c3ebef25-177b-4adc-9c47-8763b04a52fb"]'
+    - name: Convert to UTF-8
+      run: |-
+        TEMP="$(mktemp)"
+        iconv -f ISO-8859-1 -t UTF-8 -o "${TEMP}" "data/Dinesafe XML feed"
+        mv "${TEMP}" "data/Dinesafe XML feed"
+    - name: Push latest data
+      run: |-
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add data
+        git commit -m 'Update DineSafe data' || exit
+        git push
