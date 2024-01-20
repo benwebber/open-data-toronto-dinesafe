@@ -20,12 +20,7 @@ jobs:
         url: https://ckan0.cf.opendata.inter.prod-toronto.ca/
         package_id: ea1d6e57-87af-4e23-b722-6c1f5aa18a8d
         output_dir: data
-        resource_ids: '["c3ebef25-177b-4adc-9c47-8763b04a52fb"]'
-    - name: Convert to UTF-8
-      run: |-
-        TEMP="$(mktemp)"
-        iconv -f ISO-8859-1 -t UTF-8 -o "${TEMP}" "data/Dinesafe XML feed"
-        mv "${TEMP}" "data/Dinesafe XML feed"
+        resource_ids: '["815aedb5-f9d7-4dcd-a33a-4aa7ac5aac50"]'
     - name: Push latest data
       run: |-
         git config user.name "github-actions[bot]"
