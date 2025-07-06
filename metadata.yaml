@@ -7,3 +7,8 @@ license_url: https://open.toronto.ca/open-data-licence/
 source: DineSafe - City of Toronto Open Data Portal
 source_url: https://open.toronto.ca/dataset/dinesafe/
 about_url: https://github.com/benwebber/open-data-toronto-dinesafe/
+databases:
+  dinesafe:
+    tables:
+      sqlite_sequence:
+        hidden: true

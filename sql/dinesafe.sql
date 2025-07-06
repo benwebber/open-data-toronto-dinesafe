@@ -1,3 +1,44 @@
+CREATE TEMPORARY TABLE tmp AS
+SELECT
+  "Establishment ID",
+  "Establishment Name",
+  "Establishment Type",
+  "Establishment Address",
+  "Latitude",
+  "Longitude",
+  "Min. Inspections Per Year",
+  "Inspection ID",
+  "Inspection Date",
+  "Establishment Status",
+  "Infraction Details",
+  "Severity",
+  "Action",
+  "Outcome",
+  "Amount Fined"
+FROM
+  data.dinesafe
+UNION
+SELECT
+  "Establishment ID",
+  "Establishment Name",
+  "Establishment Type",
+  "Establishment Address",
+  "Latitude",
+  "Longitude",
+  "Min. Inspections Per Year",
+  "Inspection ID",
+  "Inspection Date",
+  "Establishment Status",
+  "Infraction Details",
+  "Severity",
+  "Action",
+  "Outcome",
+  "Amount Fined"
+FROM
+  data.dinesafe_archive
+;
+
+
 DROP TABLE IF EXISTS establishment;
 CREATE TABLE establishment (
   uid TEXT NOT NULL PRIMARY KEY,
@@ -24,12 +65,13 @@ SELECT
   "Longitude",
   "Min. Inspections Per Year"
 FROM
-  data.dinesafe
+  tmp
 GROUP BY
   "Establishment ID"
 HAVING
   MAX("Inspection ID")
 ;
+CREATE INDEX idx_establishment_type ON establishment (type);
 
 DROP TABLE IF EXISTS establishment_fts;
 CREATE VIRTUAL TABLE establishment_fts USING fts5 (name, address, content="establishment");
@@ -51,14 +93,17 @@ SELECT
   "Inspection Date",
   "Establishment Status"
 FROM
-  data.dinesafe
+  tmp
 WHERE
   "Inspection ID" != ''
 ;
+CREATE INDEX idx_inspection_establishment_uid ON inspection (establishment_uid);
+CREATE INDEX idx_inspection_date ON inspection (date);
+CREATE INDEX idx_inspection_status ON inspection (status);
 
 DROP TABLE IF EXISTS infraction;
 CREATE TABLE infraction (
-  uid TEXT NOT NULL PRIMARY KEY,
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   establishment_uid TEXT NOT NULL,
   inspection_uid TEXT NOT NULL,
   details TEXT NOT NULL,
@@ -71,7 +116,7 @@ CREATE TABLE infraction (
 );
 INSERT INTO infraction
 SELECT
-  "unique_id",
+  NULL,
   "Establishment ID",
   "Inspection ID",
   "Infraction Details",
@@ -80,7 +125,12 @@ SELECT
   nullif("Outcome", ''),
   nullif("Amount Fined", '')
 FROM
-  data.dinesafe
+  tmp
 WHERE
   "Infraction Details" != ''
 ;
+CREATE INDEX idx_infraction_establishment_uid ON infraction (establishment_uid);
+CREATE INDEX idx_infraction_inspection_uid ON infraction (inspection_uid);
+CREATE INDEX idx_infraction_severity ON infraction (severity);
+CREATE INDEX idx_infraction_action ON infraction (action);
+CREATE INDEX idx_infraction_outcome ON infraction (outcome);

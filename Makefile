@@ -6,8 +6,8 @@ DB := dinesafe.db
 $(DB): data.db sql/dinesafe.sql
 	sqlite3 -cmd "ATTACH '$<' AS data" $@ <sql/dinesafe.sql
 
-data.db: $(DATA)
-	sqlite3 $@ -csv -cmd '.import data/dinesafe.csv dinesafe' .exit
+data.db: $(DATA) sql/data.sql
+	sqlite3 -csv $@ <sql/data.sql
 
 %.gz: $(DB)
 	gzip --force --keep --stdout $< >$@
