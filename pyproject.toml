@@ -1,0 +1,7 @@
+[project]
+name = "open-data-toronto-dinesafe"
+dynamic = ["version"]
+dependencies = [
+  "datasette",
+  "datasette-geojson-map",
+]

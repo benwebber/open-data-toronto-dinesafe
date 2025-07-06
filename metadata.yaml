@@ -1,0 +1,9 @@
+title: DineSafe
+description: >
+  DineSafe is Toronto Public Health's food safety program that inspects all establishments serving and preparing food.
+  Each inspection results in a pass, a conditional pass or a closed notice.
+license: Open Government Licence - Toronto
+license_url: https://open.toronto.ca/open-data-licence/
+source: DineSafe - City of Toronto Open Data Portal
+source_url: https://open.toronto.ca/dataset/dinesafe/
+about_url: https://github.com/benwebber/open-data-toronto-dinesafe/
